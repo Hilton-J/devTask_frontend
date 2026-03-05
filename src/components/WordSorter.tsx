@@ -21,8 +21,6 @@ const WordSorter = () => {
     await post({ data: inputValue });
   };
 
-  console.log("Data:", data);
-
   return (
     <div className="">
       <form className="flex flex-col gap-4">

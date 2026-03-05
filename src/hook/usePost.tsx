@@ -6,12 +6,19 @@ interface PostResult {
   error: string | null;
   loading: boolean;
   post: (apiEndpoint: string, email: string) => Promise<void>;
+  reset: () => void;
 }
 
 export const usePost = (url: string): PostResult => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  const reset = () => {
+    setData(null);
+    setError(null);
+    setLoading(false);
+  };
 
   const post = async (apiEndpoint: string, email: string) => {
     try {
@@ -31,5 +38,5 @@ export const usePost = (url: string): PostResult => {
     }
   };
 
-  return { data, loading, error, post };
+  return { data, loading, error, post, reset };
 };

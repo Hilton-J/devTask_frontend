@@ -5,7 +5,7 @@ const WordSorter = () => {
   const [email, setEmail] = useState("");
   const [endpointURL, setEndpointURL] = useState("");
 
-  const { data, loading, error, post } = usePost(
+  const { data, loading, error, post, reset } = usePost(
     "https://yhxzjyykdsfkdrmdxgho.supabase.co/functions/v1/application-task",
   );
 
@@ -28,13 +28,16 @@ const WordSorter = () => {
           type="url"
           pattern="^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$"
           value={endpointURL}
-          onChange={(e) => setEndpointURL(e.target.value)}
+          onChange={(e) => {
+            setEndpointURL(e.target.value);
+            if (data || error) reset();
+          }}
           placeholder="Enter the API endpoint URL"
           className="border-2 border-solid border-gray-300 p-2 rounded"
           required
         />
         <button
-          onSubmit={handleSubmit}
+          onClick={handleSubmit}
           disabled={loading}
           type="submit"
           className="bg-blue-500 text-white p-2 rounded"
@@ -42,11 +45,11 @@ const WordSorter = () => {
           {loading ? "Testing..." : "Test URL"}
         </button>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p className="text-red-500">{error}</p>}
 
         {data?.message && (
           <div>
-            <h3>Result:</h3>
+            <h3 className="text-green-500">Result:</h3>
             <p>{data.message}</p>
           </div>
         )}

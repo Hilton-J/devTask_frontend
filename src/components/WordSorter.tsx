@@ -1,15 +1,11 @@
 import { useState } from "react";
 import { usePost } from "../hook/usePost";
-interface SortResponse {
-  message: string[];
-  error?: string;
-}
 
 const WordSorter = () => {
   const [email, setEmail] = useState("");
   const [endpointURL, setEndpointURL] = useState("");
 
-  const { data, loading, error, post } = usePost<SortResponse>(
+  const { data, loading, error, post } = usePost(
     "https://yhxzjyykdsfkdrmdxgho.supabase.co/functions/v1/application-task",
   );
 
@@ -17,11 +13,9 @@ const WordSorter = () => {
     await post(endpointURL, email);
   };
 
-  console.log("Data from usePost:", data);
-
   return (
-    <div className="">
-      <form className="flex flex-col gap-4">
+    <div className="border-2 border-solid border-gray-300 p-4 rounded  mx-auto">
+      <form className="flex flex-col gap-4 w-lg">
         <input
           type="email"
           value={email}
@@ -40,12 +34,12 @@ const WordSorter = () => {
           required
         />
         <button
-          onClick={handleSubmit}
+          onSubmit={handleSubmit}
           disabled={loading}
           type="submit"
           className="bg-blue-500 text-white p-2 rounded"
         >
-          {loading ? "Sorting..." : "Sort Alphabetically"}
+          {loading ? "Testing..." : "Test URL"}
         </button>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
@@ -53,7 +47,7 @@ const WordSorter = () => {
         {data?.message && (
           <div>
             <h3>Result:</h3>
-            <p>{data.message.join(", ")}</p>
+            <p>{data.message}</p>
           </div>
         )}
       </form>

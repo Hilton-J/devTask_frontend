@@ -25,9 +25,8 @@ export const usePost = <T, B>(
 
       setData(response.data);
     } catch (err) {
-      const axiosError = err as AxiosError<{ message: string }>;
-      // Accessing the custom error message from your Express server if available
-      setError(axiosError.response?.data?.message || axiosError.message);
+      const axiosError = err as AxiosError<{ error: string }>;
+      setError(axiosError.response?.data?.error || axiosError.message);
     } finally {
       setLoading(false);
     }

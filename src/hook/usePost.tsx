@@ -1,32 +1,31 @@
 import { useState } from "react";
-import axios, { type AxiosRequestConfig, AxiosError } from "axios";
+import axios, { type AxiosError } from "axios";
 
-interface PostResult<T, B> {
+interface PostResult<T> {
   data: T | null;
   error: string | null;
   loading: boolean;
-  post: (body: B) => Promise<void>;
+  post: (apiEndpoint: string, email: string) => Promise<void>;
 }
 
-export const usePost = <T, B>(
-  url: string,
-  config?: AxiosRequestConfig,
-): PostResult<T, B> => {
+export const usePost = <T,>(url: string): PostResult<T> => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const post = async (body: B) => {
+  const post = async (apiEndpoint: string, email: string) => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await axios.post<T>(url, body, config);
+      console.log("Response from API:", url);
+      const response = await axios.post<T>(url, { url: apiEndpoint, email });
 
       setData(response.data);
     } catch (err) {
-      const axiosError = err as AxiosError<{ error: string }>;
-      setError(axiosError.response?.data?.error || axiosError.message);
+      const axiosError = err as AxiosError<{ message: string }>;
+      // Accessing the custom error message from your Express server if available
+      setError(axiosError.response?.data?.message || axiosError.message);
     } finally {
       setLoading(false);
     }

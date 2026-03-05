@@ -1,38 +1,46 @@
 import { useState } from "react";
 import { usePost } from "../hook/usePost";
-
-interface SortRequest {
-  data: string;
-}
-
 interface SortResponse {
-  word: string[];
+  message: string[];
   error?: string;
 }
 
 const WordSorter = () => {
-  const [inputValue, setInputValue] = useState("");
+  const [email, setEmail] = useState("");
+  const [endpointURL, setEndpointURL] = useState("");
 
-  const { data, loading, error, post } = usePost<SortResponse, SortRequest>(
-    "https://lwandile-dev-task.vercel.app/api/v1/sort",
+  const { data, loading, error, post } = usePost<SortResponse>(
+    "https://yhxzjyykdsfkdrmdxgho.supabase.co/functions/v1/application-task",
   );
 
-  const handleSort = async () => {
-    await post({ data: inputValue });
+  const handleSubmit = async () => {
+    await post(endpointURL, email);
   };
+
+  console.log("Data from usePost:", data);
 
   return (
     <div className="">
       <form className="flex flex-col gap-4">
         <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Enter a word"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email"
           className="border-2 border-solid border-gray-300 p-2 rounded"
+          required
+        />
+        <input
+          type="url"
+          pattern="^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$"
+          value={endpointURL}
+          onChange={(e) => setEndpointURL(e.target.value)}
+          placeholder="Enter the API endpoint URL"
+          className="border-2 border-solid border-gray-300 p-2 rounded"
+          required
         />
         <button
-          onClick={handleSort}
+          onClick={handleSubmit}
           disabled={loading}
           type="submit"
           className="bg-blue-500 text-white p-2 rounded"
@@ -42,10 +50,10 @@ const WordSorter = () => {
 
         {error && <p style={{ color: "red" }}>{error}</p>}
 
-        {data?.word && (
+        {data?.message && (
           <div>
             <h3>Result:</h3>
-            <p>{data.word.join(", ")}</p>
+            <p>{data.message.join(", ")}</p>
           </div>
         )}
       </form>
